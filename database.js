@@ -14,7 +14,7 @@ let db;
 async function connectDB() {
   if (!db) {
     await client.connect();
-    db = client.db(); // defaults to database in URI (library)
+    db = client.db('library'); 
     console.log('Connected to MongoDB');
   }
   return db;
