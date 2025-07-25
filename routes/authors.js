@@ -5,7 +5,11 @@ const { getCollection } = require('../database');
 
 const router = express.Router();
 
-// GET all authors
+/**
+ * @route GET /authors
+ * @group Authors - Operations about authors
+ * @returns {Array.<Author>} 200 - An array of authors
+ */
 router.get('/', async (req, res) => {
   try {
     const authors = await getCollection('authors').find().toArray();
@@ -15,7 +19,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET author by ID
+/**
+ * @route GET /authors/{id}
+ * @group Authors
+ * @param {string} id.path.required - Author ID
+ * @returns {Author.model} 200 - Author details
+ * @returns {Error} 404 - Author not found
+ */
 router.get('/:id', async (req, res) => {
   try {
     const author = await getCollection('authors').findOne({ _id: new ObjectId(req.params.id) });
@@ -26,7 +36,13 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST new author
+/**
+ * @route POST /authors
+ * @group Authors
+ * @param {Author.model} author.body.required - New author data
+ * @returns {string} 201 - Inserted ID
+ * @returns {Error} 400 - Validation error
+ */
 router.post(
   '/',
   [
@@ -47,7 +63,14 @@ router.post(
   }
 );
 
-// PUT update author
+/**
+ * @route PUT /authors/{id}
+ * @group Authors
+ * @param {string} id.path.required - Author ID
+ * @param {Author.model} author.body.required - Updated author data
+ * @returns 204 - Updated successfully
+ * @returns {Error} 404 - Author not found
+ */
 router.put('/:id', async (req, res) => {
   try {
     const result = await getCollection('authors').updateOne(
@@ -61,7 +84,13 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE author
+/**
+ * @route DELETE /authors/{id}
+ * @group Authors
+ * @param {string} id.path.required - Author ID
+ * @returns {string} 200 - Author deleted successfully
+ * @returns {Error} 404 - Author not found
+ */
 router.delete('/:id', async (req, res) => {
   try {
     const result = await getCollection('authors').deleteOne({ _id: new ObjectId(req.params.id) });
@@ -73,3 +102,10 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+/**
+ * @typedef Author
+ * @property {string} name.required
+ * @property {string} email.required
+ * @property {string} birthDate.required - ISO8601 date string
+ */

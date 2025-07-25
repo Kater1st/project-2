@@ -5,7 +5,11 @@ const { getCollection } = require('../database');
 
 const router = express.Router();
 
-// GET all books
+/**
+ * @route GET /books
+ * @group Books - Operations about books
+ * @returns {Array.<Book>} 200 - An array of books
+ */
 router.get('/', async (req, res) => {
   try {
     const books = await getCollection('books').find().toArray();
@@ -15,7 +19,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET book by ID
+/**
+ * @route GET /books/{id}
+ * @group Books
+ * @param {string} id.path.required - Book ID
+ * @returns {Book.model} 200 - Book details
+ * @returns {Error} 404 - Book not found
+ */
 router.get('/:id', async (req, res) => {
   try {
     const book = await getCollection('books').findOne({ _id: new ObjectId(req.params.id) });
@@ -26,7 +36,13 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST new book
+/**
+ * @route POST /books
+ * @group Books
+ * @param {Book.model} book.body.required - New book data
+ * @returns {string} 201 - Inserted ID
+ * @returns {Error} 400 - Validation error
+ */
 router.post(
   '/',
   [
@@ -51,7 +67,14 @@ router.post(
   }
 );
 
-// PUT update book
+/**
+ * @route PUT /books/{id}
+ * @group Books
+ * @param {string} id.path.required - Book ID
+ * @param {Book.model} book.body.required - Updated book data
+ * @returns 204 - Updated successfully
+ * @returns {Error} 404 - Book not found
+ */
 router.put('/:id', async (req, res) => {
   try {
     const result = await getCollection('books').updateOne(
@@ -65,7 +88,13 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE book
+/**
+ * @route DELETE /books/{id}
+ * @group Books
+ * @param {string} id.path.required - Book ID
+ * @returns {string} 200 - Book deleted successfully
+ * @returns {Error} 404 - Book not found
+ */
 router.delete('/:id', async (req, res) => {
   try {
     const result = await getCollection('books').deleteOne({ _id: new ObjectId(req.params.id) });
@@ -77,3 +106,14 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+/**
+ * @typedef Book
+ * @property {string} title.required
+ * @property {string} author.required
+ * @property {number} price.required
+ * @property {string} genre.required
+ * @property {string} publishDate.required - ISO8601 date string
+ * @property {string} ISBN.required
+ * @property {integer} pages.required
+ */
