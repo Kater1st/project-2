@@ -5,7 +5,7 @@ const doc = {
     title: 'Project 2 API',
     description: 'API for managing books and authors',
   },
-  host: 'kater1st-cse341-node-swmg.onrender.com', 
+  host: 'https://project-2-du7r.onrender.com', 
   schemes: ['https'],
 };
 
