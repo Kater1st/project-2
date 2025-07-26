@@ -2,12 +2,13 @@ const swaggerAutogen = require('swagger-autogen')();
 
 const doc = {
   info: {
-    title: 'Project 2 API',
-    description: 'API for managing books and authors',
+    title: 'Project 2 Library API',
+    description: 'API documentation for Library project',
   },
-  host: 'https://project-2-du7r.onrender.com/', 
-  schemes: ['https'],
+  host: process.env.HOST || 'project-2-du7r.onrender.com', // use your Render domain
+  schemes: ['https'], // use https since Render enforces HTTPS
 };
+
 
 const outputFile = './swagger-output.json';
 const endpointsFiles = ['./server.js']; // main entry point
