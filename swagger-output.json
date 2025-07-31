@@ -23,7 +23,10 @@
     },
     "/books/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Books"
+        ],
+        "description": "Retrieve all books from the database",
         "responses": {
           "200": {
             "description": "OK"
@@ -34,7 +37,50 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Books"
+        ],
+        "description": "Create a new book",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "The Great Gatsby"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "F. Scott Fitzgerald"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 19.99
+                },
+                "genre": {
+                  "type": "string",
+                  "example": "Fiction"
+                },
+                "publishDate": {
+                  "type": "string",
+                  "example": "1925-04-10"
+                },
+                "ISBN": {
+                  "type": "string",
+                  "example": "9780743273565"
+                },
+                "pages": {
+                  "type": "number",
+                  "example": 218
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -50,13 +96,17 @@
     },
     "/books/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Books"
+        ],
+        "description": "Retrieve a single book by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Book ID"
           }
         ],
         "responses": {
@@ -72,13 +122,55 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Books"
+        ],
+        "description": "Update an existing book by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Book ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Updated Title"
+                },
+                "author": {
+                  "type": "string",
+                  "example": "Updated Author"
+                },
+                "price": {
+                  "type": "number",
+                  "example": 25.99
+                },
+                "genre": {
+                  "type": "string",
+                  "example": "Updated Genre"
+                },
+                "publishDate": {
+                  "type": "string",
+                  "example": "2020-01-01"
+                },
+                "ISBN": {
+                  "type": "string",
+                  "example": "1112223334445"
+                },
+                "pages": {
+                  "type": "number",
+                  "example": 300
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -94,13 +186,17 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Books"
+        ],
+        "description": "Delete a book by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Book ID"
           }
         ],
         "responses": {
@@ -118,7 +214,10 @@
     },
     "/authors/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Authors"
+        ],
+        "description": "Retrieve all authors from the database",
         "responses": {
           "200": {
             "description": "OK"
@@ -129,7 +228,34 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Authors"
+        ],
+        "description": "Create a new author",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "johndoe@example.com"
+                },
+                "birthDate": {
+                  "type": "string",
+                  "example": "1970-01-01"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -145,13 +271,17 @@
     },
     "/authors/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Authors"
+        ],
+        "description": "Retrieve a single author by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Author ID"
           }
         ],
         "responses": {
@@ -167,13 +297,39 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Authors"
+        ],
+        "description": "Update an existing author by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Author ID"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Jane Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "janedoe@example.com"
+                },
+                "birthDate": {
+                  "type": "string",
+                  "example": "1980-05-05"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -189,13 +345,17 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Authors"
+        ],
+        "description": "Delete an author by ID",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "Author ID"
           }
         ],
         "responses": {

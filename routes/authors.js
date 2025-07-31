@@ -6,11 +6,11 @@ const { getCollection } = require('../database');
 const router = express.Router();
 
 /**
- * @route GET /authors
- * @group Authors - Operations about authors
- * @returns {Array.<Author>} 200 - An array of authors
+ * GET all authors
  */
 router.get('/', async (req, res) => {
+  // #swagger.tags = ['Authors']
+  // #swagger.description = 'Retrieve all authors from the database'
   try {
     const authors = await getCollection('authors').find().toArray();
     res.json(authors);
@@ -20,13 +20,12 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * @route GET /authors/{id}
- * @group Authors
- * @param {string} id.path.required - Author ID
- * @returns {Author.model} 200 - Author details
- * @returns {Error} 404 - Author not found
+ * GET author by ID
  */
 router.get('/:id', async (req, res) => {
+  // #swagger.tags = ['Authors']
+  // #swagger.description = 'Retrieve a single author by ID'
+  // #swagger.parameters['id'] = { description: 'Author ID' }
   try {
     const author = await getCollection('authors').findOne({ _id: new ObjectId(req.params.id) });
     if (!author) return res.status(404).json({ error: 'Author not found' });
@@ -37,20 +36,27 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * @route POST /authors
- * @group Authors
- * @param {Author.model} author.body.required - New author data
- * @returns {string} 201 - Inserted ID
- * @returns {Error} 400 - Validation error
+ * POST create author
  */
 router.post(
   '/',
   [
-    body('name').notEmpty().withMessage('Name is required'),
-    body('email').isEmail().withMessage('Email must be valid'),
-    body('birthDate').isISO8601().withMessage('Birth date must be valid'),
+    body('name').notEmpty(),
+    body('email').isEmail(),
+    body('birthDate').isISO8601()
   ],
   async (req, res) => {
+    // #swagger.tags = ['Authors']
+    // #swagger.description = 'Create a new author'
+    /* #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+            birthDate: '1970-01-01'
+          }
+    } */
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
@@ -64,14 +70,21 @@ router.post(
 );
 
 /**
- * @route PUT /authors/{id}
- * @group Authors
- * @param {string} id.path.required - Author ID
- * @param {Author.model} author.body.required - Updated author data
- * @returns 204 - Updated successfully
- * @returns {Error} 404 - Author not found
+ * PUT update author
  */
 router.put('/:id', async (req, res) => {
+  // #swagger.tags = ['Authors']
+  // #swagger.description = 'Update an existing author by ID'
+  // #swagger.parameters['id'] = { description: 'Author ID' }
+  /* #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          name: 'Jane Doe',
+          email: 'janedoe@example.com',
+          birthDate: '1980-05-05'
+        }
+  } */
   try {
     const result = await getCollection('authors').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -85,13 +98,12 @@ router.put('/:id', async (req, res) => {
 });
 
 /**
- * @route DELETE /authors/{id}
- * @group Authors
- * @param {string} id.path.required - Author ID
- * @returns {string} 200 - Author deleted successfully
- * @returns {Error} 404 - Author not found
+ * DELETE author
  */
 router.delete('/:id', async (req, res) => {
+  // #swagger.tags = ['Authors']
+  // #swagger.description = 'Delete an author by ID'
+  // #swagger.parameters['id'] = { description: 'Author ID' }
   try {
     const result = await getCollection('authors').deleteOne({ _id: new ObjectId(req.params.id) });
     if (result.deletedCount === 0) return res.status(404).json({ error: 'Author not found' });
@@ -102,10 +114,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-/**
- * @typedef Author
- * @property {string} name.required
- * @property {string} email.required
- * @property {string} birthDate.required - ISO8601 date string
- */

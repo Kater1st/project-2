@@ -6,11 +6,11 @@ const { getCollection } = require('../database');
 const router = express.Router();
 
 /**
- * @route GET /books
- * @group Books - Operations about books
- * @returns {Array.<Book>} 200 - An array of books
+ * GET all books
  */
 router.get('/', async (req, res) => {
+  // #swagger.tags = ['Books']
+  // #swagger.description = 'Retrieve all books from the database'
   try {
     const books = await getCollection('books').find().toArray();
     res.json(books);
@@ -20,13 +20,12 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * @route GET /books/{id}
- * @group Books
- * @param {string} id.path.required - Book ID
- * @returns {Book.model} 200 - Book details
- * @returns {Error} 404 - Book not found
+ * GET book by ID
  */
 router.get('/:id', async (req, res) => {
+  // #swagger.tags = ['Books']
+  // #swagger.description = 'Retrieve a single book by ID'
+  // #swagger.parameters['id'] = { description: 'Book ID' }
   try {
     const book = await getCollection('books').findOne({ _id: new ObjectId(req.params.id) });
     if (!book) return res.status(404).json({ error: 'Book not found' });
@@ -37,24 +36,35 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * @route POST /books
- * @group Books
- * @param {Book.model} book.body.required - New book data
- * @returns {string} 201 - Inserted ID
- * @returns {Error} 400 - Validation error
+ * POST create book
  */
 router.post(
   '/',
   [
-    body('title').notEmpty().withMessage('Title is required'),
-    body('author').notEmpty().withMessage('Author is required'),
-    body('price').isNumeric().withMessage('Price must be a number'),
-    body('genre').notEmpty().withMessage('Genre is required'),
-    body('publishDate').isISO8601().withMessage('Publish date must be valid'),
-    body('ISBN').notEmpty().withMessage('ISBN is required'),
-    body('pages').isInt({ min: 1 }).withMessage('Pages must be a positive number'),
+    body('title').notEmpty(),
+    body('author').notEmpty(),
+    body('price').isNumeric(),
+    body('genre').notEmpty(),
+    body('publishDate').isISO8601(),
+    body('ISBN').notEmpty(),
+    body('pages').isInt({ min: 1 })
   ],
   async (req, res) => {
+    // #swagger.tags = ['Books']
+    // #swagger.description = 'Create a new book'
+    /* #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            title: 'The Great Gatsby',
+            author: 'F. Scott Fitzgerald',
+            price: 19.99,
+            genre: 'Fiction',
+            publishDate: '1925-04-10',
+            ISBN: '9780743273565',
+            pages: 218
+          }
+    } */
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
@@ -68,14 +78,25 @@ router.post(
 );
 
 /**
- * @route PUT /books/{id}
- * @group Books
- * @param {string} id.path.required - Book ID
- * @param {Book.model} book.body.required - Updated book data
- * @returns 204 - Updated successfully
- * @returns {Error} 404 - Book not found
+ * PUT update book
  */
 router.put('/:id', async (req, res) => {
+  // #swagger.tags = ['Books']
+  // #swagger.description = 'Update an existing book by ID'
+  // #swagger.parameters['id'] = { description: 'Book ID' }
+  /* #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          title: 'Updated Title',
+          author: 'Updated Author',
+          price: 25.99,
+          genre: 'Updated Genre',
+          publishDate: '2020-01-01',
+          ISBN: '1112223334445',
+          pages: 300
+        }
+  } */
   try {
     const result = await getCollection('books').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -89,13 +110,12 @@ router.put('/:id', async (req, res) => {
 });
 
 /**
- * @route DELETE /books/{id}
- * @group Books
- * @param {string} id.path.required - Book ID
- * @returns {string} 200 - Book deleted successfully
- * @returns {Error} 404 - Book not found
+ * DELETE book
  */
 router.delete('/:id', async (req, res) => {
+  // #swagger.tags = ['Books']
+  // #swagger.description = 'Delete a book by ID'
+  // #swagger.parameters['id'] = { description: 'Book ID' }
   try {
     const result = await getCollection('books').deleteOne({ _id: new ObjectId(req.params.id) });
     if (result.deletedCount === 0) return res.status(404).json({ error: 'Book not found' });
@@ -106,14 +126,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-/**
- * @typedef Book
- * @property {string} title.required
- * @property {string} author.required
- * @property {number} price.required
- * @property {string} genre.required
- * @property {string} publishDate.required - ISO8601 date string
- * @property {string} ISBN.required
- * @property {integer} pages.required
- */
