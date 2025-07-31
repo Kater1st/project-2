@@ -26,7 +26,7 @@
         "tags": [
           "Books"
         ],
-        "description": "Retrieve all books from the database",
+        "description": "Retrieve all books",
         "responses": {
           "200": {
             "description": "OK"
@@ -51,31 +51,31 @@
               "properties": {
                 "title": {
                   "type": "string",
-                  "example": "The Great Gatsby"
+                  "example": "Atomic Habits"
                 },
                 "author": {
                   "type": "string",
-                  "example": "F. Scott Fitzgerald"
+                  "example": "James Clear"
                 },
-                "price": {
+                "publishedYear": {
                   "type": "number",
-                  "example": 19.99
+                  "example": 2018
                 },
                 "genre": {
                   "type": "string",
-                  "example": "Fiction"
-                },
-                "publishDate": {
-                  "type": "string",
-                  "example": "1925-04-10"
-                },
-                "ISBN": {
-                  "type": "string",
-                  "example": "9780743273565"
+                  "example": "Self-help"
                 },
                 "pages": {
                   "type": "number",
-                  "example": 218
+                  "example": 320
+                },
+                "publisher": {
+                  "type": "string",
+                  "example": "Penguin Random House"
+                },
+                "isbn": {
+                  "type": "string",
+                  "example": "9780735211292"
                 }
               }
             }
@@ -125,14 +125,13 @@
         "tags": [
           "Books"
         ],
-        "description": "Update an existing book by ID",
+        "description": "Update an existing book",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "description": "Book ID"
+            "type": "string"
           },
           {
             "name": "body",
@@ -143,31 +142,31 @@
               "properties": {
                 "title": {
                   "type": "string",
-                  "example": "Updated Title"
+                  "example": "Atomic Habits"
                 },
                 "author": {
                   "type": "string",
-                  "example": "Updated Author"
+                  "example": "James Clear"
                 },
-                "price": {
+                "publishedYear": {
                   "type": "number",
-                  "example": 25.99
+                  "example": 2018
                 },
                 "genre": {
                   "type": "string",
-                  "example": "Updated Genre"
-                },
-                "publishDate": {
-                  "type": "string",
-                  "example": "2020-01-01"
-                },
-                "ISBN": {
-                  "type": "string",
-                  "example": "1112223334445"
+                  "example": "Self-help"
                 },
                 "pages": {
                   "type": "number",
-                  "example": 300
+                  "example": 320
+                },
+                "publisher": {
+                  "type": "string",
+                  "example": "Penguin Random House"
+                },
+                "isbn": {
+                  "type": "string",
+                  "example": "9780735211292"
                 }
               }
             }
@@ -176,6 +175,9 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -217,7 +219,7 @@
         "tags": [
           "Authors"
         ],
-        "description": "Retrieve all authors from the database",
+        "description": "Retrieve all authors",
         "responses": {
           "200": {
             "description": "OK"
@@ -242,15 +244,15 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "John Doe"
+                  "example": "Paulo Coelho"
                 },
-                "email": {
+                "nationality": {
                   "type": "string",
-                  "example": "johndoe@example.com"
+                  "example": "Brazilian"
                 },
-                "birthDate": {
-                  "type": "string",
-                  "example": "1970-01-01"
+                "birthYear": {
+                  "type": "number",
+                  "example": 1947
                 }
               }
             }
@@ -300,14 +302,13 @@
         "tags": [
           "Authors"
         ],
-        "description": "Update an existing author by ID",
+        "description": "Update an existing author",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "description": "Author ID"
+            "type": "string"
           },
           {
             "name": "body",
@@ -318,15 +319,15 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "Jane Doe"
+                  "example": "Paulo Coelho"
                 },
-                "email": {
+                "nationality": {
                   "type": "string",
-                  "example": "janedoe@example.com"
+                  "example": "Brazilian"
                 },
-                "birthDate": {
-                  "type": "string",
-                  "example": "1980-05-05"
+                "birthYear": {
+                  "type": "number",
+                  "example": 1947
                 }
               }
             }
@@ -335,6 +336,9 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"

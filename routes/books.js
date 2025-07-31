@@ -10,7 +10,7 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   // #swagger.tags = ['Books']
-  // #swagger.description = 'Retrieve all books from the database'
+  // #swagger.description = 'Retrieve all books'
   try {
     const books = await getCollection('books').find().toArray();
     res.json(books);
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * GET book by ID
+ * GET a book by ID
  */
 router.get('/:id', async (req, res) => {
   // #swagger.tags = ['Books']
@@ -36,18 +36,18 @@ router.get('/:id', async (req, res) => {
 });
 
 /**
- * POST create book
+ * POST create a new book
  */
 router.post(
   '/',
   [
-    body('title').notEmpty(),
-    body('author').notEmpty(),
-    body('price').isNumeric(),
-    body('genre').notEmpty(),
-    body('publishDate').isISO8601(),
-    body('ISBN').notEmpty(),
-    body('pages').isInt({ min: 1 })
+    body('title').notEmpty().withMessage('Title is required'),
+    body('author').notEmpty().withMessage('Author is required'),
+    body('publishedYear').isInt({ min: 0 }).withMessage('Published year must be a valid year'),
+    body('genre').notEmpty().withMessage('Genre is required'),
+    body('pages').isInt({ min: 1 }).withMessage('Pages must be a positive integer'),
+    body('publisher').notEmpty().withMessage('Publisher is required'),
+    body('isbn').notEmpty().withMessage('ISBN is required')
   ],
   async (req, res) => {
     // #swagger.tags = ['Books']
@@ -56,13 +56,13 @@ router.post(
           in: 'body',
           required: true,
           schema: {
-            title: 'The Great Gatsby',
-            author: 'F. Scott Fitzgerald',
-            price: 19.99,
-            genre: 'Fiction',
-            publishDate: '1925-04-10',
-            ISBN: '9780743273565',
-            pages: 218
+            title: 'Atomic Habits',
+            author: 'James Clear',
+            publishedYear: 2018,
+            genre: 'Self-help',
+            pages: 320,
+            publisher: 'Penguin Random House',
+            isbn: '9780735211292'
           }
     } */
     const errors = validationResult(req);
@@ -78,39 +78,53 @@ router.post(
 );
 
 /**
- * PUT update book
+ * PUT update a book by ID
  */
-router.put('/:id', async (req, res) => {
-  // #swagger.tags = ['Books']
-  // #swagger.description = 'Update an existing book by ID'
-  // #swagger.parameters['id'] = { description: 'Book ID' }
-  /* #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          title: 'Updated Title',
-          author: 'Updated Author',
-          price: 25.99,
-          genre: 'Updated Genre',
-          publishDate: '2020-01-01',
-          ISBN: '1112223334445',
-          pages: 300
-        }
-  } */
-  try {
-    const result = await getCollection('books').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
-    );
-    if (result.matchedCount === 0) return res.status(404).json({ error: 'Book not found' });
-    res.status(204).send();
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update book' });
+router.put(
+  '/:id',
+  [
+    body('title').optional().notEmpty().withMessage('Title must not be empty'),
+    body('author').optional().notEmpty().withMessage('Author must not be empty'),
+    body('publishedYear').optional().isInt({ min: 0 }).withMessage('Published year must be valid'),
+    body('genre').optional().notEmpty().withMessage('Genre must not be empty'),
+    body('pages').optional().isInt({ min: 1 }).withMessage('Pages must be positive'),
+    body('publisher').optional().notEmpty().withMessage('Publisher must not be empty'),
+    body('isbn').optional().notEmpty().withMessage('ISBN must not be empty')
+  ],
+  async (req, res) => {
+    // #swagger.tags = ['Books']
+    // #swagger.description = 'Update an existing book'
+    /* #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            title: 'Atomic Habits',
+            author: 'James Clear',
+            publishedYear: 2018,
+            genre: 'Self-help',
+            pages: 320,
+            publisher: 'Penguin Random House',
+            isbn: '9780735211292'
+          }
+    } */
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    try {
+      const result = await getCollection('books').updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body }
+      );
+      if (result.matchedCount === 0) return res.status(404).json({ error: 'Book not found' });
+      res.status(204).send();
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to update book' });
+    }
   }
-});
+);
 
 /**
- * DELETE book
+ * DELETE a book by ID
  */
 router.delete('/:id', async (req, res) => {
   // #swagger.tags = ['Books']
@@ -126,3 +140,14 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+/**
+ * @typedef Book
+ * @property {string} title.required
+ * @property {string} author.required
+ * @property {integer} publishedYear.required
+ * @property {string} genre.required
+ * @property {integer} pages.required
+ * @property {string} publisher.required
+ * @property {string} isbn.required
+ */
