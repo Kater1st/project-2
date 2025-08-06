@@ -2,6 +2,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const { body, validationResult } = require('express-validator');
 const { getCollection } = require('../database');
+const { isAuthenticated } = require('../middleware/auth'); // NEW
 
 const router = express.Router();
 
@@ -40,6 +41,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post(
   '/',
+  isAuthenticated, // PROTECT
   [
     body('title').notEmpty().withMessage('Title is required'),
     body('author').notEmpty().withMessage('Author is required'),
@@ -82,6 +84,7 @@ router.post(
  */
 router.put(
   '/:id',
+  isAuthenticated, // PROTECT
   [
     body('title').optional().notEmpty().withMessage('Title must not be empty'),
     body('author').optional().notEmpty().withMessage('Author must not be empty'),
@@ -126,7 +129,7 @@ router.put(
 /**
  * DELETE a book by ID
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
   // #swagger.tags = ['Books']
   // #swagger.description = 'Delete a book by ID'
   // #swagger.parameters['id'] = { description: 'Book ID' }
@@ -140,14 +143,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-/**
- * @typedef Book
- * @property {string} title.required
- * @property {string} author.required
- * @property {integer} publishedYear.required
- * @property {string} genre.required
- * @property {integer} pages.required
- * @property {string} publisher.required
- * @property {string} isbn.required
- */

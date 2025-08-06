@@ -2,6 +2,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const { body, validationResult } = require('express-validator');
 const { getCollection } = require('../database');
+const { isAuthenticated } = require('../middleware/auth'); // NEW
 
 const router = express.Router();
 
@@ -40,6 +41,7 @@ router.get('/:id', async (req, res) => {
  */
 router.post(
   '/',
+  isAuthenticated, // PROTECT
   [
     body('name').notEmpty().withMessage('Name is required'),
     body('nationality').notEmpty().withMessage('Nationality is required'),
@@ -74,6 +76,7 @@ router.post(
  */
 router.put(
   '/:id',
+  isAuthenticated, // PROTECT
   [
     body('name').optional().notEmpty().withMessage('Name must not be empty'),
     body('nationality').optional().notEmpty().withMessage('Nationality must not be empty'),
@@ -110,7 +113,7 @@ router.put(
 /**
  * DELETE an author by ID
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
   // #swagger.tags = ['Authors']
   // #swagger.description = 'Delete an author by ID'
   // #swagger.parameters['id'] = { description: 'Author ID' }
@@ -124,10 +127,3 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-/**
- * @typedef Author
- * @property {string} name.required
- * @property {string} nationality.required
- * @property {integer} birthYear.required
- */
